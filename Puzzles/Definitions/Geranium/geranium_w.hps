@@ -1,0 +1,82 @@
+add_puzzle(
+    name = "Geranium W",
+    authors = ["Emma-Marie Cadet"],
+    scramble = 25000,
+    build = fn() {
+        p = point(0, 0)
+        rm = 0.68
+        rings = [rm * φ, rm, rm * (φ - 1)]
+
+        circles = [circle(0, 0, 0.5)]
+        for i, r in rings {
+            circles ++= [circle(r, 0, 0.5)]
+            for j in 1..10 {
+                circles ++= [circles[10 * i + 1].rotate(p, 2 * j * π / 10)]
+            }
+        }
+        for i in 0..10 {
+            circles ++= [circles[0].rotate(circles[i + 11].c, 2 * π / 5)]
+        }
+
+        t = []
+        turn_names = ["M"
+                    , "XA","XB","XC","XD","XE","XF","XG","XH","XI","XJ"
+                    , "YA","YB","YC","YD","YE","YF","YG","YH","YI","YJ"
+                    , "ZA","ZB","ZC","ZD","ZE","ZF","ZG","ZH","ZI","ZJ"
+                    , "WA","WB","WC","WD","WE","WF","WG","WH","WI","WJ"]
+        for i, c in circles {
+            t ++= [turn(c, 10)]
+        }
+
+        add_circles(circles)
+        add_turns(t, turn_names)
+
+        // cuts for the rings
+        sym_turn = turn(circle(p, 10), 10)
+        for i, a in sym_turn.powers() {
+            turn(a)
+            cut([t[1].mult(3), t[2].mult(4), t[3].mult(3), t[2].inverse(), t[0].mult(-i-1), t[13]])
+            cut([t[0].mult(3-i), t[1].mult(3), t[12], t[1].mult(-4), t[12].inverse(), t[1].mult(4), t[12].mult(-3), t[1].mult(-3), t[2]])
+            cut([t[0].mult(-i-3), t[1].mult(-4), t[12].mult(-3), t[1].mult(4), t[2]])
+            cut([t[0].mult(-i-4), t[1].mult(-3), t[2].mult(3), t[1].inverse(), t[12]])
+            cut([t[0].mult(-i-1), t[2].mult(-4), t[1].mult(-3), t[2].mult(3), t[13], t[2]])
+            cut([t[0].mult(-i-2), t[3].mult(3), t[14].mult(4), t[3].mult(-2), t[0].mult(2), t[1].inverse(), t[12]])
+            cut([t[0].mult(-i-2), t[4].mult(3), t[3].mult(-4), t[14].mult(3), t[3].mult(4), t[1].inverse(), t[0].mult(2), t[12]])
+            cut([t[0].mult(-i-1), t[2].inverse(), t[13].mult(-3), t[0], t[2], t[1].inverse(), t[3].mult(4), t[12]])
+            cut([t[0].mult(-i), t[2].mult(3), t[1].mult(3), t[12].mult(3), t[3].mult(3), t[2].inverse(), t[0].inverse(), t[13]])
+            cut([t[0].mult(3-i), t[3].mult(-3), t[4].mult(3), t[15].mult(4), t[4].inverse(), t[1].inverse(), t[12], t[24]])
+            undo_all()
+        }
+
+        // middle circle cuts
+        turn([t[1].mult(3), t[12].mult(3), t[3].mult(2), t[3], t[0], t[14].mult(4), t[0].mult(-4), t[3].inverse()])
+        cut([t[23].mult(-4), t[3], t[10].inverse(), t[11].inverse(), t[2]])
+        cut([t[23].mult(-3), t[3].inverse(), t[12].mult(-3), t[3], t[23].mult(3), t[0].mult(2), t[3].inverse(), t[12], t[0].inverse(), t[1], t[9].inverse(), t[20]])
+        for i in 0..5 { undo() }
+        turn([t[0].mult(-2), t[5].mult(-3), t[14].mult(-4), t[5].mult(4), t[14], t[5].mult(-4), t[14].mult(-3)])
+        cut([t[6].mult(3), t[0].mult(-3), t[17].mult(3), t[0].mult(2), t[23]])
+        turn([t[0].mult(-4)])
+        cut([t[14].mult(3), t[3].mult(-3), t[14].mult(-3), t[3].mult(2), t[23].mult(4), t[3].inverse(), t[12], t[10].mult(-3), t[1].mult(4), t[2]])
+        cut([t[23].mult(3), t[14].mult(2), t[5].inverse(), t[10].inverse(), t[11].inverse(), t[0].mult(2), t[16]])
+        cut([t[23].mult(-3), t[3].mult(-2), t[10].inverse(), t[11].inverse(), t[2]])
+        undo_all()
+        cut([t[1].mult(2), t[12].mult(-3), t[1].mult(-2), t[10]])
+        cut([t[4].inverse(), t[15].mult(3), t[6].mult(4), t[7]])
+        cut([t[1].mult(3), t[12].mult(-4), t[4].mult(3), t[5].mult(3), t[4].mult(-4), t[3], t[15], t[35]])
+        tr = [t[1].inverse(), t[12].mult(-3), t[1].mult(-3), t[12].mult(3), t[1].mult(3), t[12].mult(-3), t[1], t[2]]
+        for i in [0, 3, -4] {
+            cut([t[0].mult(i)] ++ tr)
+        }
+        tr = [t[1].mult(3), t[12].mult(-3), t[1].mult(3), t[12].mult(4), t[1].mult(-3), t[12].inverse(), t[2]]
+        for i in [0, 3, -3] {
+            cut([t[0].mult(i)] ++ tr)
+        }
+
+        color([circles[0]], white)
+        for c in [red, blue, orange, light_blue, light_red, purple, magenta, cyan, green, yellow] {
+            turn(sym_turn)
+            color([circles[13], ~circles[14], ~circles[3], ~circles[0]], c)
+            color([circles[2], ~circles[1]], c)
+        }
+    },
+)
