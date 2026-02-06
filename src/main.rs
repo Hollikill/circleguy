@@ -8,6 +8,10 @@ pub mod ui;
 
 use crate::ui::app::*;
 use approx_collections::Precision;
+///include the puzzles in the wasm
+#[cfg(target_arch = "wasm32")]
+pub static PUZZLE_DEFINITIONS: include_dir::Dir<'_> =
+    include_dir::include_dir!("$CARGO_MANIFEST_DIR/Puzzles/Definitions");
 ///path for definitions
 pub const DEF_PATH: &str = "Puzzles/Definitions";
 ///used for general purpose
@@ -15,7 +19,7 @@ pub const PRECISION: approx_collections::Precision = Precision::new_simple(20);
 ///used for the float pools from approx
 pub const POOL_PRECISION: approx_collections::Precision = Precision::new(20, 20);
 ///default puzzle loaded when the program is opened
-const DEFAULT_PUZZLE: &str = "2 Circles\\Pentagons\\Stars";
+const DEFAULT_PUZZLE: &str = "2 Circles/Pentagons/Stars";
 ///location of the icon
 const ICON_PNG_DATA: &[u8] = include_bytes!("../resources/icon.png");
 ///detail of rendering

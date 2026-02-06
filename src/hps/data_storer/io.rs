@@ -1,9 +1,12 @@
 #[cfg(not(target_arch = "wasm32"))]
+use std::path::Path;
+
+#[cfg(not(target_arch = "wasm32"))]
 const DEV: bool = true;
 
 #[cfg(not(target_arch = "wasm32"))]
-pub fn write_string_to_file(path: &str, data: &str) -> Result<(), std::io::Error> {
-    use std::fs;
+pub fn write_string_to_file(path: &Path, data: &str) -> Result<(), std::io::Error> {
+    use std::{fs, path::PathBuf};
 
     let curr_path = match DEV {
         //where the path is depends on if the program is being compiled or run in an EXE removed from the original folder. the DEV constant handles this
@@ -19,7 +22,8 @@ pub fn write_string_to_file(path: &str, data: &str) -> Result<(), std::io::Error
         ),
         true => String::new(),
     };
-    let real_path = curr_path + path; //add the path to the base path
+    let real_path = PathBuf::from("./").join(&PathBuf::from(curr_path).join(path)); //add the path to the base path
+    dbg!(&real_path);
     fs::write(real_path, data.as_bytes())?;
     Ok(())
 }

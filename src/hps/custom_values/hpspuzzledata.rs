@@ -1,4 +1,4 @@
-use std::{collections::HashMap, f64::consts::PI};
+use std::{collections::HashMap, f64::consts::PI, path::PathBuf};
 
 use approx_collections::FloatPool;
 
@@ -65,7 +65,7 @@ impl HPSPuzzleData {
             scramble: 0,
         }
     }
-    pub fn to_puzzle_data(&self, path: &str) -> PuzzleData {
+    pub fn to_puzzle_data(&self, path: &PathBuf) -> PuzzleData {
         PuzzleData {
             name: self.name.clone(),
             authors: self.authors.clone(),
@@ -74,7 +74,7 @@ impl HPSPuzzleData {
             intern: self.intern.clone(),
             depth: self.scramble,
             keybinds: HashMap::new(),
-            path: path.to_string(),
+            path: path.clone(),
         }
     }
     pub fn add_disk(&mut self, disk: ComplexCircle) -> bool {

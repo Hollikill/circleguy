@@ -1,4 +1,8 @@
-use std::collections::HashMap;
+use std::{
+    collections::HashMap,
+    ffi::{OsStr, OsString},
+    path::Path,
+};
 
 use kdl::{KdlDocument, KdlNode};
 
@@ -6,7 +10,7 @@ use kdl::{KdlDocument, KdlNode};
 
 pub struct KeybindData {
     pub defaults: HashMap<egui::Key, (String, isize)>,
-    pub overrides: HashMap<String, HashMap<egui::Key, (String, isize)>>,
+    pub overrides: HashMap<OsString, HashMap<egui::Key, (String, isize)>>,
 }
 
 impl KeybindData {
@@ -38,13 +42,13 @@ impl KeybindData {
                     }
                 }
                 "override" => {
-                    let name = node.entries().get(0)?.value().as_string()?;
+                    let name = OsString::from(node.entries().get(0)?.value().as_string()?);
                     let mut over = HashMap::new();
                     for c in node.children()?.nodes() {
                         let t = parse_turn_node(c)?;
                         over.insert(t.0, t.1);
                     }
-                    overrides.insert(name.to_string(), over);
+                    overrides.insert(name, over);
                 }
                 _ => {}
             }
@@ -54,7 +58,7 @@ impl KeybindData {
             overrides,
         })
     }
-    pub fn get_keybinds_for_puzzle(&self, name: &str) -> HashMap<egui::Key, (String, isize)> {
+    pub fn get_keybinds_for_puzzle(&self, name: &OsStr) -> HashMap<egui::Key, (String, isize)> {
         let mut binds = HashMap::new();
         for (k, v) in &self.defaults {
             binds.insert(*k, v.clone());

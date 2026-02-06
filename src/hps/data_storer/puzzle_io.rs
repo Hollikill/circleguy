@@ -1,9 +1,12 @@
+use std::path::PathBuf;
+
 use kdl::KdlDocument;
 
 use crate::{hps::data_storer::data_storer::DataStorer, puzzle::puzzle::Puzzle};
 
 pub struct PuzzleIOData {
-    pub path: String,
+    pub name: String,
+    pub path: PathBuf,
     pub scramble: Option<Vec<String>>,
     pub stack: Vec<(String, isize)>,
 }
@@ -11,7 +14,8 @@ pub struct PuzzleIOData {
 impl Puzzle {
     pub fn to_io_data(&self) -> PuzzleIOData {
         PuzzleIOData {
-            path: self.name.clone(),
+            name: self.name.clone(),
+            path: self.data.path.clone(),
             scramble: self.scramble.clone(),
             stack: self.stack.clone(),
         }
@@ -22,7 +26,10 @@ impl Puzzle {
                 .lock()
                 .unwrap()
                 .get(&data.path)?
-                .load(&mut ds.rt, ds.keybinds.get_keybinds_for_puzzle(&data.path))
+                .load(
+                    &mut ds.rt,
+                    ds.keybinds.get_keybinds_for_puzzle(&data.path.file_name()?),
+                )
                 .ok()?,
         );
         if let Some(scramb) = &data.scramble {
@@ -44,7 +51,8 @@ impl Puzzle {
 impl PuzzleIOData {
     pub fn to_string(&self) -> String {
         let mut string = String::new();
-        string += &format!("name \"{}\"\n", self.path);
+        string += &format!("name \"{}\"\n", self.name);
+        string += &format!("path \"{}\"\n", self.path.to_string_lossy());
         if let Some(s) = &self.scramble {
             string += "scramble {\n";
             for t in s {
@@ -62,7 +70,15 @@ impl PuzzleIOData {
     pub fn from_string(string: String) -> Option<Self> {
         let kdl = string.parse::<KdlDocument>().ok()?;
         Some(Self {
-            path: kdl
+            path: PathBuf::from(
+                kdl.get("path")?
+                    .entries()
+                    .get(0)?
+                    .value()
+                    .as_string()?
+                    .to_string(),
+            ),
+            name: kdl
                 .get("name")?
                 .entries()
                 .get(0)?

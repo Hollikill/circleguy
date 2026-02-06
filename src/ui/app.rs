@@ -1,3 +1,6 @@
+use std::ffi::OsString;
+use std::path::{Path, PathBuf};
+
 use crate::hps::data_storer::data_storer::DataStorer;
 use crate::puzzle::puzzle::*;
 use crate::ui::render::draw_circle;
@@ -41,12 +44,17 @@ impl App {
                 //"Configs/Keybinds/groups.kdl",
             );
             let _ = ds.load_keybinds("Configs/keybinds.kdl");
-            let p_data = &ds.puzzles.lock().unwrap().get(DEFAULT_PUZZLE);
+            let p_data = &ds
+                .puzzles
+                .lock()
+                .unwrap()
+                .get(&PathBuf::from(DEFAULT_PUZZLE));
             if let Some(in_data) = p_data.clone() {
                 in_data
                     .load(
                         &mut ds.rt,
-                        ds.keybinds.get_keybinds_for_puzzle(&in_data.name),
+                        ds.keybinds
+                            .get_keybinds_for_puzzle(&in_data.path.file_name().unwrap()),
                     )
                     .ok()
             } else {
@@ -123,7 +131,9 @@ impl eframe::App for App {
                         //if a puzzle is returned (a button is clicked), load it
                         match puzzle_data.load(
                             &mut ds.rt,
-                            ds.keybinds.get_keybinds_for_puzzle(&puzzle_data.name),
+                            ds.keybinds.get_keybinds_for_puzzle(&OsString::from(
+                                puzzle_data.path.file_name().unwrap(),
+                            )),
                         ) {
                             Ok(puz_data) => self.puzzle = Some(Puzzle::new(puz_data)),
                             Err(diag) => self.curr_msg = diag.msg.to_string(),

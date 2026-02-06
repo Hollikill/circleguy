@@ -1,3 +1,4 @@
+use std::path::PathBuf;
 use std::sync::Arc;
 
 use hyperpuzzlescript::{Builtins, Error, FnValue, FullDiagnostic, Runtime, hps_fns};
@@ -41,7 +42,7 @@ pub fn loading_builtins(
             #[kwargs(name: String, authors: Vec<String>, scramble: usize = 500, (build, span): Arc<FnValue>, experimental: bool = false)]
             fn add_puzzle(ctx: EvalCtx) -> () {
                 if !experimental || exp {
-                    let path = ctx.runtime.modules.get_path(ctx.caller_span.context).unwrap().to_string();
+                    let path = PathBuf::from(ctx.runtime.modules.get_path(ctx.caller_span.context).unwrap().to_string());
                     let mut p = puzzles.lock().unwrap();
                     if p.get(&path).is_some() {
                         return Err(Error::User("Error: duplicate puzzle names!".into()).at(ctx.caller_span));

@@ -22,6 +22,7 @@ use egui::{
     pos2,
 };
 use std::cmp::*;
+use std::ffi::OsString;
 
 pub struct RenderingCircle {
     pub cent: Pos2,
@@ -294,7 +295,7 @@ impl DataStorer {
                 }
                 (DefEntry::Def(_), DefEntry::Folder(_)) => Ordering::Less,
                 (DefEntry::Folder(_), DefEntry::Def(_)) => Ordering::Greater,
-                (DefEntry::Folder((na, _)), DefEntry::Folder((nb, _))) => String::cmp(na, nb),
+                (DefEntry::Folder((na, _)), DefEntry::Folder((nb, _))) => OsString::cmp(na, nb),
             }
         }
         fn render_def_entry(entry: &DefEntry, ui: &mut Ui) -> Option<PuzzleLoadingData> {
@@ -308,7 +309,7 @@ impl DataStorer {
                 }
                 DefEntry::Folder((name, dirs)) => {
                     if let Some(x) = ui
-                        .collapsing(name, |inner_ui| {
+                        .collapsing(name.to_string_lossy(), |inner_ui| {
                             let mut ret = None;
                             let mut sorted_dirs =
                                 dirs.clone().into_values().collect::<Vec<DefEntry>>();

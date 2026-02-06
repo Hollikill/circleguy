@@ -9,6 +9,7 @@ use std::collections::HashMap;
 use std::hash::DefaultHasher;
 use std::hash::Hash;
 use std::hash::Hasher;
+use std::path::PathBuf;
 use std::time::Instant;
 #[derive(Debug, Clone)]
 pub struct Puzzle {
@@ -20,7 +21,7 @@ pub struct Puzzle {
     pub scramble: Option<Vec<String>>,
     pub animation_offset: Option<Turn>, //the turn of the puzzle that the animation is currently doing
     pub intern: FloatPool,
-    pub depth: u16,
+    pub depth: usize,
     pub solved: bool,
     pub anim_left: f32, //the amount of animation left
     pub data: PuzzleData,
@@ -30,7 +31,7 @@ pub struct Puzzle {
 #[derive(Debug, Clone)]
 pub struct PuzzleData {
     pub name: String,
-    pub path: String,
+    pub path: PathBuf,
     pub authors: Vec<String>,
     pub pieces: Vec<Piece>,
     pub turns: HashMap<String, OrderedTurn>,
@@ -54,7 +55,7 @@ impl Puzzle {
             scramble: None,
             animation_offset: None,
             intern: data.intern.clone(),
-            depth: data.depth as u16,
+            depth: data.depth,
             solved: true,
             anim_left: 0.0,
             keybinds: data.keybinds.clone(),
