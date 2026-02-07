@@ -136,7 +136,7 @@ impl Puzzle {
         self.reset()?;
         let mut scramble = Vec::new();
         let mut h = DefaultHasher::new();
-        Instant::now().hash(&mut h);
+        web_time::Instant::now().hash(&mut h);
         let bytes = h.finish().to_ne_bytes();
         let mut rng = rand::rngs::StdRng::from_seed(
             //initialize the rng from a seed. this is needed for web reasons
