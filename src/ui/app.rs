@@ -1,5 +1,5 @@
 use std::ffi::OsString;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
 use crate::hps::data_storer::data_storer::DataStorer;
 use crate::puzzle::puzzle::*;

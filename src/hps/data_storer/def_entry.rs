@@ -1,7 +1,7 @@
 use std::{
     collections::HashMap,
     ffi::{OsStr, OsString},
-    path::{Path, PathBuf},
+    path::Path,
 };
 
 use crate::hps::data_storer::data_storer::PuzzleLoadingData;

@@ -10,7 +10,6 @@ use std::hash::DefaultHasher;
 use std::hash::Hash;
 use std::hash::Hasher;
 use std::path::PathBuf;
-use std::time::Instant;
 #[derive(Debug, Clone)]
 pub struct Puzzle {
     pub name: String,

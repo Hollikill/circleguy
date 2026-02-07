@@ -1,7 +1,6 @@
 use std::{
     collections::HashMap,
     ffi::{OsStr, OsString},
-    path::Path,
 };
 
 use kdl::{KdlDocument, KdlNode};
