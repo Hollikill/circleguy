@@ -131,7 +131,7 @@ impl Puzzle {
             Ok(false)
         }
     }
-    ///scramble the puzzle 500 moves
+    ///scramble the puzzle self.depth moves
     pub fn scramble(&mut self, cut: bool) -> Result<(), String> {
         self.reset()?;
         let mut scramble = Vec::new();

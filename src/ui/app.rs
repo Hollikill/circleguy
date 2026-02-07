@@ -169,6 +169,7 @@ impl eframe::App for App {
                 //if the animation speed is fast enough, remove animations entirely
                 p.animation_offset = None;
             }
+            //self.curr_msg = String::from("HI");
             //UI Section: menu bar
             egui::MenuBar::new().ui(ui, |ui| {
                 //file menu controls save/loading logs
