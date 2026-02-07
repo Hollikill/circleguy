@@ -99,6 +99,7 @@ impl DataStorer {
         self.rt.exec_all_files();
         Ok(())
     }
+    #[cfg(not(target_arch = "wasm32"))]
     pub fn load_keybinds(&mut self, kb_path: &str) -> Result<(), ()> {
         let data = read_file_to_string(kb_path).ok().ok_or(())?;
         self.keybinds = KeybindData::load_from_string(data).ok_or(())?;
@@ -141,6 +142,19 @@ impl DataStorer {
                 self.add_from_dir(d)?;
             }
         }
+        Ok(())
+    }
+    #[cfg(target_arch = "wasm32")]
+    pub fn load_keybinds(&mut self, _kb_path: &str) -> Result<(), ()> {
+        let data = crate::KEYBINDS
+            .entries()
+            .get(0)
+            .ok_or(())?
+            .as_file()
+            .ok_or(())?
+            .contents_utf8()
+            .ok_or(())?;
+        self.keybinds = KeybindData::load_from_string(data.to_string()).ok_or(())?;
         Ok(())
     }
 }

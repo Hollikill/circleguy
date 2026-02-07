@@ -12,6 +12,9 @@ use approx_collections::Precision;
 #[cfg(target_arch = "wasm32")]
 pub static PUZZLE_DEFINITIONS: include_dir::Dir<'_> =
     include_dir::include_dir!("$CARGO_MANIFEST_DIR/Puzzles/Definitions");
+#[cfg(target_arch = "wasm32")]
+pub static KEYBINDS: include_dir::Dir<'_> =
+    include_dir::include_dir!("$CARGO_MANIFEST_DIR/Configs");
 ///path for definitions
 pub const DEF_PATH: &str = "Puzzles/Definitions";
 ///used for general purpose
